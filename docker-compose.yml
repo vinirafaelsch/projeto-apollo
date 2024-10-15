@@ -1,0 +1,40 @@
+version: '3'
+services:
+  backend:
+    build:
+      context: ./backend
+    ports:
+      - "5000:5000"
+    depends_on:
+      - mongodb
+    environment:
+      - MONGO_URI=mongodb://mongodb:27017/apollo-solutions
+    networks:
+      - app-network
+    volumes:
+      - ./backend:/app
+
+  frontend:
+    build:
+      context: ./frontend
+    ports:
+      - "3000:3000"
+    depends_on:
+      - backend
+    networks:
+      - app-network
+
+  mongodb:
+    image: mongo:6.0
+    restart: always
+    container_name: mongodb
+    volumes:
+      - dbdata:/data/db
+    networks:
+      - app-network
+
+volumes:
+  dbdata:
+
+networks:
+  app-network:
